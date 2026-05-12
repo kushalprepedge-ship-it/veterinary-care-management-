@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>VetCare Dashboard</title>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+<h2>🐾 VetCare Admin</h2>
+
+<ul>
+
+<li onclick="showSection('home')">Dashboard</li>
+
+<li onclick="showSection('doctor')">Doctors</li>
+
+<li onclick="showSection('appointments')">Appointments</li>
+
+<li onclick="showSection('records')">Pet Records</li>
+
+<li onclick="logout()">Logout</li>
+
+</ul>
+
+</div>
+
+
+<div class="container">
+
+<!-- DASHBOARD -->
+
+<div id="home" class="section">
+
+<h1>Welcome Admin 👋</h1>
+
+<p>Veterinary Care Management Dashboard</p>
+
+<br>
+
+<div class="cards">
+
+<div class="card" onclick="showSection('doctor')">
+
+<h3>Total Doctors</h3>
+
+<p id="doctorCount">0</p>
+
+</div>
+
+
+<div class="card" onclick="showSection('appointments')">
+
+<h3>Total Appointments</h3>
+
+<p id="appointmentCount">0</p>
+
+</div>
+
+
+<div class="card" onclick="showSection('records')">
+
+<h3>Registered Pets</h3>
+
+<p id="petCount">0</p>
+
+</div>
+
+</div>
+
+
+<br><br>
+
+<h2>Recent Appointments</h2>
+
+<table id="recentAppointmentTable">
+
+<tr>
+<th>Client</th>
+<th>Phone</th>
+<th>Pet</th>
+<th>Date & Time</th>
+<th>Status</th>
+</tr>
+
+</table>
+
+</div>
+
+
+<!-- DOCTORS -->
+
+<div id="doctor" class="section">
+
+<h2>Add Doctor</h2>
+
+<form onsubmit="addDoctor(event)">
+
+<input type="text"
+id="doctorName"
+placeholder="Doctor Name"
+required>
+
+<input type="text"
+id="specialization"
+placeholder="Specialization"
+required>
+
+<input type="text"
+id="doctorPhone"
+placeholder="Phone Number"
+maxlength="10"
+required>
+
+<button type="submit">
+Add Doctor
+</button>
+
+</form>
+
+
+<table id="doctorTable">
+
+<tr>
+<th>Name</th>
+<th>Specialization</th>
+<th>Phone</th>
+<th>Action</th>
+</tr>
+
+</table>
+
+</div>
+
+
+<!-- APPOINTMENTS -->
+
+<div id="appointments" class="section">
+
+<h2>Appointment Management</h2>
+
+<form onsubmit="addAppointment(event)">
+
+<input type="text"
+id="clientName"
+placeholder="Client Name"
+required>
+
+<input type="text"
+id="clientPhone"
+placeholder="Phone Number"
+maxlength="10"
+required>
+
+<input type="text"
+id="petType"
+placeholder="Pet Name"
+required>
+
+<input type="date"
+id="appointmentDate"
+required>
+
+<input type="time"
+id="appointmentTime"
+required>
+
+<button type="submit">
+Book Appointment
+</button>
+
+</form>
+
+
+<table id="appointmentTable">
+
+<tr>
+<th>Client</th>
+<th>Phone</th>
+<th>Pet</th>
+<th>Date</th>
+<th>Time</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+</table>
+
+</div>
+
+
+<!-- PET RECORDS -->
+
+<div id="records" class="section">
+
+<h2>Pet Medical Records</h2>
+
+<form onsubmit="addRecord(event)">
+
+<input type="text"
+id="petName"
+placeholder="Pet Name"
+required>
+
+<input type="text"
+id="disease"
+placeholder="Disease"
+required>
+
+<input type="text"
+id="treatment"
+placeholder="Treatment"
+required>
+
+<button type="submit">
+Add Record
+</button>
+
+</form>
+
+
+<table id="recordTable">
+
+<tr>
+<th>Pet</th>
+<th>Disease</th>
+<th>Treatment</th>
+<th>Action</th>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+
+<footer class="footer">
+
+<p>© 2026 VetCare Management System</p>
+
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
