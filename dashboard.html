@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dashboard - VetCare</title>
+<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body onload="checkLogin()">
+
+<div class="sidebar">
+
+<h2>🐾 VetCare</h2>
+
+<ul>
+<li onclick="showSection('home')">Dashboard</li>
+<li onclick="showSection('vet')">Vets</li>
+<li onclick="showSection('records')">Records</li>
+<li onclick="logout()">Logout</li>
+</ul>
+
+</div>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+<div id="home" class="section">
+
+<h2>Dashboard</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Records</h3>
+<p id="totalRecords">0</p>
+</div>
+
+<div class="card">
+<h3>Total Pets</h3>
+<p id="totalPets">0</p>
+</div>
+
+</div>
+
+</div>
+
+<!-- VETS -->
+<div id="vet" class="section">
+
+<h2>Veterinarians</h2>
+
+<table>
+<tr>
+<th>Name</th>
+<th>Specialization</th>
+<th>Contact</th>
+</tr>
+
+<tr>
+<td>Dr. Sharma</td>
+<td>Surgery</td>
+<td>9876543210</td>
+</tr>
+
+<tr>
+<td>Dr. Mehta</td>
+<td>Medicine</td>
+<td>9876501234</td>
+</tr>
+
+</table>
+
+</div>
+
+<!-- RECORDS -->
+<div id="records" class="section">
+
+<h2>Pet Records</h2>
+
+<form onsubmit="addRecord(event)">
+
+<input type="text" id="petName" placeholder="Pet Name">
+<input type="text" id="disease" placeholder="Disease">
+<input type="text" id="treatment" placeholder="Treatment">
+
+<button>Add Record</button>
+
+</form>
+
+<table id="recordTable">
+
+<tr>
+<th>Pet</th>
+<th>Disease</th>
+<th>Treatment</th>
+<th>Action</th>
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
