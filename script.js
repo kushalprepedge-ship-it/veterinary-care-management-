@@ -1,566 +1,345 @@
-/* ==========================
-   LOCAL STORAGE
-========================== */
-
-let doctors = JSON.parse(localStorage.getItem("doctors")) || [];
-let appointments = JSON.parse(localStorage.getItem("appointments")) || [];
-let records = JSON.parse(localStorage.getItem("records")) || [];
-
-let doctorCount = 0;
-let appointmentCount = 0;
-let petCount = 0;
-
-
-/* ==========================
-   LOGIN
-========================== */
+/* LOGIN */
 
 function login(){
 
-let user=document.getElementById("username").value;
-let pass=document.getElementById("password").value;
+let user =
+document.getElementById("username").value;
 
-if(user==="admin" && pass==="admin123")
+let pass =
+document.getElementById("password").value;
+
+if(user === "admin" && pass === "admin123")
 {
-window.location="dashboard.html";
+window.location = "dashboard.html";
 }
 else
 {
-document.getElementById("error").innerText=
+document.getElementById("error").innerText =
 "Invalid Username or Password";
 }
 
 }
 
 
-/* ==========================
-   LOGOUT
-========================== */
+/* LOGOUT */
 
 function logout(){
 
-window.location="index.html";
+window.location = "index.html";
 
 }
 
 
-/* ==========================
-   SHOW SECTION
-========================== */
+/* SHOW SECTION */
 
 function showSection(id){
 
-let sections=document.querySelectorAll(".section");
+let sections =
+document.querySelectorAll(".section");
 
 sections.forEach(section=>{
 
-section.style.display="none";
+section.style.display = "none";
 
 });
 
-document.getElementById(id).style.display="block";
+document.getElementById(id).style.display =
+"block";
 
 }
 
 
-/* ==========================
-   OPEN DASHBOARD
-========================== */
+/* OPEN DASHBOARD */
 
-window.onload=function(){
-
-if(document.getElementById("home"))
-{
+window.onload = function(){
 
 showSection("home");
 
 disablePastDates();
 
-loadDoctors();
-
-loadAppointments();
-
-loadRecords();
-
-}
-
-};
-
-
-/* ==========================
-   SAVE FUNCTIONS
-========================== */
-
-function saveDoctors(){
-
-localStorage.setItem(
-"doctors",
-JSON.stringify(doctors)
-);
-
-}
-
-function saveAppointments(){
-
-localStorage.setItem(
-"appointments",
-JSON.stringify(appointments)
-);
-
-}
-
-function saveRecords(){
-
-localStorage.setItem(
-"records",
-JSON.stringify(records)
-);
-
 }
 
 
-/* ==========================
-   LOAD DOCTORS
-========================== */
+/* COUNTS */
 
-function loadDoctors(){
-
-let table=document.getElementById("doctorTable");
-
-if(!table) return;
-
-doctors.forEach((doc,index)=>{
-
-let row=table.insertRow();
-
-row.insertCell(0).innerText=doc.name;
-row.insertCell(1).innerText=doc.specialization;
-row.insertCell(2).innerText=doc.phone;
-
-row.insertCell(3).innerHTML=
-`<button onclick="deleteDoctor(${index})">
-Delete
-</button>`;
-
-});
-
-doctorCount=doctors.length;
-
-document.getElementById("doctorCount").innerText=
-doctorCount;
-
-}
+let doctorCount = 0;
+let appointmentCount = 0;
+let petCount = 0;
 
 
-/* ==========================
-   ADD DOCTOR
-========================== */
+/* ADD DOCTOR */
 
 function addDoctor(e){
 
 e.preventDefault();
 
-let name=document.getElementById("doctorName").value;
+let name =
+document.getElementById("doctorName").value;
 
-let specialization=
+let specialization =
 document.getElementById("specialization").value;
 
-let phone=
+let phone =
 document.getElementById("doctorPhone").value;
 
-if(phone.length!==10)
+if(phone.length !== 10)
 {
 alert("Enter valid 10 digit number");
 return;
 }
 
-doctors.push({
+let table =
+document.getElementById("doctorTable");
 
-name,
-specialization,
-phone
+let row = table.insertRow();
 
-});
+row.insertCell(0).innerText = name;
+row.insertCell(1).innerText = specialization;
+row.insertCell(2).innerText = phone;
 
-saveDoctors();
+row.insertCell(3).innerHTML =
+'<button onclick="deleteDoctor(this)">Delete</button>';
 
-refreshDoctors();
+doctorCount++;
+
+document.getElementById("doctorCount").innerText =
+doctorCount;
 
 e.target.reset();
 
 }
 
 
-/* ==========================
-   REFRESH DOCTOR TABLE
-========================== */
+/* DELETE DOCTOR */
 
-function refreshDoctors(){
+function deleteDoctor(btn){
 
-let table=document.getElementById("doctorTable");
+btn.parentElement.parentElement.remove();
 
-table.innerHTML=
+doctorCount--;
 
-`
-<tr>
-
-<th>Name</th>
-
-<th>Specialization</th>
-
-<th>Phone</th>
-
-<th>Action</th>
-
-</tr>
-`;
-
-loadDoctors();
+document.getElementById("doctorCount").innerText =
+doctorCount;
 
 }
 
 
-/* ==========================
-   DELETE DOCTOR
-========================== */
-
-function deleteDoctor(index){
-
-doctors.splice(index,1);
-
-saveDoctors();
-
-refreshDoctors();
-
-}
-
-
-/* ==========================
-   LOAD APPOINTMENTS
-========================== */
-
-function loadAppointments(){
-
-let table=document.getElementById("appointmentTable");
-
-let recent=document.getElementById("recentAppointmentTable");
-
-if(!table) return;
-
-appointments.forEach((app,index)=>{
-
-let row=table.insertRow();
-
-row.insertCell(0).innerText=app.client;
-row.insertCell(1).innerText=app.phone;
-row.insertCell(2).innerText=app.pet;
-row.insertCell(3).innerText=app.date;
-row.insertCell(4).innerText=app.time;
-
-row.insertCell(5).innerHTML=
-
-app.status;
-
-row.insertCell(6).innerHTML=
-
-`
-<button onclick="completeAppointment(${index})">
-Complete
-</button>
-
-<button onclick="rescheduleAppointment(${index})">
-Reschedule
-</button>
-
-<button onclick="callClient('${app.phone}')">
-Call
-</button>
-
-<button onclick="deleteAppointment(${index})">
-Delete
-</button>
-`;
-
-let r=recent.insertRow();
-
-r.insertCell(0).innerText=app.client;
-r.insertCell(1).innerText=app.phone;
-r.insertCell(2).innerText=app.pet;
-r.insertCell(3).innerText=
-app.date+" "+app.time;
-
-r.insertCell(4).innerHTML=
-app.status;
-
-});
-
-appointmentCount=appointments.length;
-
-document.getElementById("appointmentCount").innerText=
-appointmentCount;
-
-}
- /* ==========================
-   ADD APPOINTMENT
-========================== */
+/* ADD APPOINTMENT */
 
 function addAppointment(e){
 
 e.preventDefault();
 
-let client=document.getElementById("clientName").value;
-let phone=document.getElementById("clientPhone").value;
-let pet=document.getElementById("petType").value;
-let date=document.getElementById("appointmentDate").value;
-let time=document.getElementById("appointmentTime").value;
+let client =
+document.getElementById("clientName").value;
 
-if(phone.length!==10)
+let phone =
+document.getElementById("clientPhone").value;
+
+let pet =
+document.getElementById("petType").value;
+
+let date =
+document.getElementById("appointmentDate").value;
+
+let time =
+document.getElementById("appointmentTime").value;
+
+
+if(phone.length !== 10)
 {
 alert("Enter valid 10 digit number");
 return;
 }
 
-appointments.push({
 
-client,
-phone,
-pet,
-date,
-time,
-status:'<span style="color:orange;">Pending</span>'
+/* APPOINTMENT TABLE */
 
-});
+let table =
+document.getElementById("appointmentTable");
 
-saveAppointments();
+let row = table.insertRow();
 
-refreshAppointments();
+row.insertCell(0).innerText = client;
+row.insertCell(1).innerText = phone;
+row.insertCell(2).innerText = pet;
+row.insertCell(3).innerText = date;
+row.insertCell(4).innerText = time;
+
+row.insertCell(5).innerHTML =
+'<span style="color:orange;">Pending</span>';
+
+row.insertCell(6).innerHTML =
+`
+<button onclick="completeAppointment(this)">
+Complete
+</button>
+
+<button onclick="rescheduleAppointment(this)">
+Reschedule
+</button>
+
+<button onclick="callClient('${phone}')">
+Call
+</button>
+
+<button onclick="deleteAppointment(this)">
+Delete
+</button>
+`;
+
+
+/* UPDATE COUNT */
+
+appointmentCount++;
+
+document.getElementById("appointmentCount").innerText =
+appointmentCount;
+
+
+/* DASHBOARD RECENT TABLE */
+
+let recent =
+document.getElementById("recentAppointmentTable");
+
+let recentRow = recent.insertRow();
+
+recentRow.insertCell(0).innerText = client;
+recentRow.insertCell(1).innerText = phone;
+recentRow.insertCell(2).innerText = pet;
+
+recentRow.insertCell(3).innerText =
+date + " " + time;
+
+recentRow.insertCell(4).innerHTML =
+'<span style="color:orange;">Pending</span>';
 
 e.target.reset();
 
 }
 
 
-/* ==========================
-   REFRESH APPOINTMENTS
-========================== */
+/* COMPLETE */
 
-function refreshAppointments(){
+function completeAppointment(btn){
 
-let table=document.getElementById("appointmentTable");
+let row =
+btn.parentElement.parentElement;
 
-table.innerHTML=
-`
-<tr>
-<th>Client</th>
-<th>Phone</th>
-<th>Pet</th>
-<th>Date</th>
-<th>Time</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
-`;
-
-let recent=document.getElementById("recentAppointmentTable");
-
-recent.innerHTML=
-`
-<tr>
-<th>Client</th>
-<th>Phone</th>
-<th>Pet</th>
-<th>Date & Time</th>
-<th>Status</th>
-</tr>
-`;
-
-loadAppointments();
-
-}
-
-
-/* ==========================
-   COMPLETE APPOINTMENT
-========================== */
-
-function completeAppointment(index){
-
-appointments[index].status =
+row.cells[5].innerHTML =
 '<span style="color:lightgreen;">Completed</span>';
 
-saveAppointments();
-
-refreshAppointments();
-
 }
 
 
-/* ==========================
-   RESCHEDULE
-========================== */
+/* RESCHEDULE */
 
-function rescheduleAppointment(index){
+function rescheduleAppointment(btn){
 
-let newDate=prompt("Enter new date (yyyy-mm-dd)");
-let newTime=prompt("Enter new time");
+let newDate =
+prompt("Enter new date (yyyy-mm-dd)");
+
+let newTime =
+prompt("Enter new time");
 
 if(newDate && newTime)
 {
+let row =
+btn.parentElement.parentElement;
 
-appointments[index].date=newDate;
-appointments[index].time=newTime;
-
-saveAppointments();
-
-refreshAppointments();
+row.cells[3].innerText = newDate;
+row.cells[4].innerText = newTime;
 
 alert("Appointment Rescheduled");
-
 }
 
 }
 
 
-/* ==========================
-   DELETE APPOINTMENT
-========================== */
+/* DELETE APPOINTMENT */
 
-function deleteAppointment(index){
+function deleteAppointment(btn){
 
-appointments.splice(index,1);
+btn.parentElement.parentElement.remove();
 
-saveAppointments();
+appointmentCount--;
 
-refreshAppointments();
+document.getElementById("appointmentCount").innerText =
+appointmentCount;
 
 }
 
 
-/* ==========================
-   CALL CLIENT
-========================== */
+/* CALL CLIENT */
 
 function callClient(phone){
 
-window.location.href="tel:"+phone;
+window.location.href = "tel:" + phone;
 
 }
 
 
-/* ==========================
-   LOAD RECORDS
-========================== */
-
-function loadRecords(){
-
-let table=document.getElementById("recordTable");
-
-if(!table) return;
-
-records.forEach((record,index)=>{
-
-let row=table.insertRow();
-
-row.insertCell(0).innerText=record.pet;
-row.insertCell(1).innerText=record.disease;
-row.insertCell(2).innerText=record.treatment;
-
-row.insertCell(3).innerHTML=
-`
-<button onclick="deleteRecord(${index})">
-Delete
-</button>
-`;
-
-});
-
-petCount=records.length;
-
-document.getElementById("petCount").innerText=
-petCount;
-
-}
-
-
-/* ==========================
-   ADD RECORD
-========================== */
+/* ADD PET RECORD */
 
 function addRecord(e){
 
 e.preventDefault();
 
-let pet=document.getElementById("petName").value;
-let disease=document.getElementById("disease").value;
-let treatment=document.getElementById("treatment").value;
+let pet =
+document.getElementById("petName").value;
 
-records.push({
+let disease =
+document.getElementById("disease").value;
 
-pet,
-disease,
-treatment
+let treatment =
+document.getElementById("treatment").value;
 
-});
+let table =
+document.getElementById("recordTable");
 
-saveRecords();
+let row = table.insertRow();
 
-refreshRecords();
+row.insertCell(0).innerText = pet;
+row.insertCell(1).innerText = disease;
+row.insertCell(2).innerText = treatment;
+
+row.insertCell(3).innerHTML =
+'<button onclick="deleteRecord(this)">Delete</button>';
+
+petCount++;
+
+document.getElementById("petCount").innerText =
+petCount;
 
 e.target.reset();
 
 }
 
 
-/* ==========================
-   REFRESH RECORDS
-========================== */
+/* DELETE RECORD */
 
-function refreshRecords(){
+function deleteRecord(btn){
 
-let table=document.getElementById("recordTable");
+btn.parentElement.parentElement.remove();
 
-table.innerHTML=
-`
-<tr>
-<th>Pet</th>
-<th>Disease</th>
-<th>Treatment</th>
-<th>Action</th>
-</tr>
-`;
+petCount--;
 
-loadRecords();
+document.getElementById("petCount").innerText =
+petCount;
 
 }
 
 
-/* ==========================
-   DELETE RECORD
-========================== */
-
-function deleteRecord(index){
-
-records.splice(index,1);
-
-saveRecords();
-
-refreshRecords();
-
-}
-
-
-/* ==========================
-   DISABLE PAST DATES
-========================== */
+/* DISABLE PAST DATES */
 
 function disablePastDates(){
 
-let input=document.getElementById("appointmentDate");
+let today = new Date();
 
-if(!input) return;
+let minDate =
+today.toISOString().split("T")[0];
 
-let today=new Date();
+document.getElementById("appointmentDate").min =
+minDate;
 
-input.min=today.toISOString().split("T")[0];
-
-} 
+}
