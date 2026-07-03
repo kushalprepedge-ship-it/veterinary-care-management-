@@ -1,566 +1,309 @@
-/* ==========================
-   LOCAL STORAGE
-========================== */
-
-let doctors = JSON.parse(localStorage.getItem("doctors")) || [];
-let appointments = JSON.parse(localStorage.getItem("appointments")) || [];
-let records = JSON.parse(localStorage.getItem("records")) || [];
-
-let doctorCount = 0;
-let appointmentCount = 0;
-let petCount = 0;
-
-
-/* ==========================
-   LOGIN
-========================== */
-
-function login(){
-
-let user=document.getElementById("username").value;
-let pass=document.getElementById("password").value;
-
-if(user==="admin" && pass==="admin123")
-{
-window.location="dashboard.html";
-}
-else
-{
-document.getElementById("error").innerText=
-"Invalid Username or Password";
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
+body{
+    background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),
+    url("https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+    color:white;
+    min-height:100vh;
 }
 
+/* LOGIN */
 
-/* ==========================
-   LOGOUT
-========================== */
-
-function logout(){
-
-window.location="index.html";
-
+.login-body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
 }
 
-
-/* ==========================
-   SHOW SECTION
-========================== */
-
-function showSection(id){
-
-let sections=document.querySelectorAll(".section");
-
-sections.forEach(section=>{
-
-section.style.display="none";
-
-});
-
-document.getElementById(id).style.display="block";
-
+.login-box{
+    width:380px;
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(12px);
+    padding:40px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.4);
 }
 
-
-/* ==========================
-   OPEN DASHBOARD
-========================== */
-
-window.onload=function(){
-
-if(document.getElementById("home"))
-{
-
-showSection("home");
-
-disablePastDates();
-
-loadDoctors();
-
-loadAppointments();
-
-loadRecords();
-
+.login-box h2{
+    margin-bottom:25px;
+    color:#90ee90;
 }
 
-};
-
-
-/* ==========================
-   SAVE FUNCTIONS
-========================== */
-
-function saveDoctors(){
-
-localStorage.setItem(
-"doctors",
-JSON.stringify(doctors)
-);
-
+.login-box input{
+    width:100%;
+    padding:13px;
+    margin:10px 0;
+    border:none;
+    outline:none;
+    border-radius:10px;
+    font-size:15px;
 }
 
-function saveAppointments(){
-
-localStorage.setItem(
-"appointments",
-JSON.stringify(appointments)
-);
-
+.login-box button{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:10px;
+    background:#2e8b57;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+    transition:.3s;
 }
 
-function saveRecords(){
-
-localStorage.setItem(
-"records",
-JSON.stringify(records)
-);
-
+.login-box button:hover{
+    background:#1f6f45;
+    transform:scale(1.03);
 }
 
-
-/* ==========================
-   LOAD DOCTORS
-========================== */
-
-function loadDoctors(){
-
-let table=document.getElementById("doctorTable");
-
-if(!table) return;
-
-doctors.forEach((doc,index)=>{
-
-let row=table.insertRow();
-
-row.insertCell(0).innerText=doc.name;
-row.insertCell(1).innerText=doc.specialization;
-row.insertCell(2).innerText=doc.phone;
-
-row.insertCell(3).innerHTML=
-`<button onclick="deleteDoctor(${index})">
-Delete
-</button>`;
-
-});
-
-doctorCount=doctors.length;
-
-document.getElementById("doctorCount").innerText=
-doctorCount;
-
+#error{
+    color:#ff8080;
+    margin-top:15px;
 }
 
+/* NAVBAR */
 
-/* ==========================
-   ADD DOCTOR
-========================== */
-
-function addDoctor(e){
-
-e.preventDefault();
-
-let name=document.getElementById("doctorName").value;
-
-let specialization=
-document.getElementById("specialization").value;
-
-let phone=
-document.getElementById("doctorPhone").value;
-
-if(phone.length!==10)
-{
-alert("Enter valid 10 digit number");
-return;
+.navbar{
+    background:rgba(0,0,0,.6);
+    backdrop-filter:blur(10px);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 35px;
+    position:sticky;
+    top:0;
+    z-index:100;
 }
 
-doctors.push({
-
-name,
-specialization,
-phone
-
-});
-
-saveDoctors();
-
-refreshDoctors();
-
-e.target.reset();
-
+.navbar h2{
+    color:#90ee90;
 }
 
-
-/* ==========================
-   REFRESH DOCTOR TABLE
-========================== */
-
-function refreshDoctors(){
-
-let table=document.getElementById("doctorTable");
-
-table.innerHTML=
-
-`
-<tr>
-
-<th>Name</th>
-
-<th>Specialization</th>
-
-<th>Phone</th>
-
-<th>Action</th>
-
-</tr>
-`;
-
-loadDoctors();
-
+.navbar ul{
+    list-style:none;
+    display:flex;
+    gap:15px;
 }
 
-
-/* ==========================
-   DELETE DOCTOR
-========================== */
-
-function deleteDoctor(index){
-
-doctors.splice(index,1);
-
-saveDoctors();
-
-refreshDoctors();
-
+.navbar li{
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.3s;
 }
 
-
-/* ==========================
-   LOAD APPOINTMENTS
-========================== */
-
-function loadAppointments(){
-
-let table=document.getElementById("appointmentTable");
-
-let recent=document.getElementById("recentAppointmentTable");
-
-if(!table) return;
-
-appointments.forEach((app,index)=>{
-
-let row=table.insertRow();
-
-row.insertCell(0).innerText=app.client;
-row.insertCell(1).innerText=app.phone;
-row.insertCell(2).innerText=app.pet;
-row.insertCell(3).innerText=app.date;
-row.insertCell(4).innerText=app.time;
-
-row.insertCell(5).innerHTML=
-
-app.status;
-
-row.insertCell(6).innerHTML=
-
-`
-<button onclick="completeAppointment(${index})">
-Complete
-</button>
-
-<button onclick="rescheduleAppointment(${index})">
-Reschedule
-</button>
-
-<button onclick="callClient('${app.phone}')">
-Call
-</button>
-
-<button onclick="deleteAppointment(${index})">
-Delete
-</button>
-`;
-
-let r=recent.insertRow();
-
-r.insertCell(0).innerText=app.client;
-r.insertCell(1).innerText=app.phone;
-r.insertCell(2).innerText=app.pet;
-r.insertCell(3).innerText=
-app.date+" "+app.time;
-
-r.insertCell(4).innerHTML=
-app.status;
-
-});
-
-appointmentCount=appointments.length;
-
-document.getElementById("appointmentCount").innerText=
-appointmentCount;
-
-}
- /* ==========================
-   ADD APPOINTMENT
-========================== */
-
-function addAppointment(e){
-
-e.preventDefault();
-
-let client=document.getElementById("clientName").value;
-let phone=document.getElementById("clientPhone").value;
-let pet=document.getElementById("petType").value;
-let date=document.getElementById("appointmentDate").value;
-let time=document.getElementById("appointmentTime").value;
-
-if(phone.length!==10)
-{
-alert("Enter valid 10 digit number");
-return;
+.navbar li:hover{
+    background:#2e8b57;
 }
 
-appointments.push({
+/* MAIN */
 
-client,
-phone,
-pet,
-date,
-time,
-status:'<span style="color:orange;">Pending</span>'
-
-});
-
-saveAppointments();
-
-refreshAppointments();
-
-e.target.reset();
-
+.container{
+    padding:30px;
 }
 
-
-/* ==========================
-   REFRESH APPOINTMENTS
-========================== */
-
-function refreshAppointments(){
-
-let table=document.getElementById("appointmentTable");
-
-table.innerHTML=
-`
-<tr>
-<th>Client</th>
-<th>Phone</th>
-<th>Pet</th>
-<th>Date</th>
-<th>Time</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
-`;
-
-let recent=document.getElementById("recentAppointmentTable");
-
-recent.innerHTML=
-`
-<tr>
-<th>Client</th>
-<th>Phone</th>
-<th>Pet</th>
-<th>Date & Time</th>
-<th>Status</th>
-</tr>
-`;
-
-loadAppointments();
-
+.section{
+    display:none;
+    animation:fade .5s;
 }
 
+/* DASHBOARD CARDS */
 
-/* ==========================
-   COMPLETE APPOINTMENT
-========================== */
-
-function completeAppointment(index){
-
-appointments[index].status =
-'<span style="color:lightgreen;">Completed</span>';
-
-saveAppointments();
-
-refreshAppointments();
-
+.cards{
+    display:flex;
+    gap:25px;
+    flex-wrap:wrap;
 }
 
-
-/* ==========================
-   RESCHEDULE
-========================== */
-
-function rescheduleAppointment(index){
-
-let newDate=prompt("Enter new date (yyyy-mm-dd)");
-let newTime=prompt("Enter new time");
-
-if(newDate && newTime)
-{
-
-appointments[index].date=newDate;
-appointments[index].time=newTime;
-
-saveAppointments();
-
-refreshAppointments();
-
-alert("Appointment Rescheduled");
-
+.card{
+    width:250px;
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(10px);
+    padding:25px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 6px 18px rgba(0,0,0,.3);
+    transition:.3s;
+    cursor:pointer;
 }
 
+.card:hover{
+    transform:translateY(-8px);
+    background:rgba(255,255,255,.22);
 }
 
-
-/* ==========================
-   DELETE APPOINTMENT
-========================== */
-
-function deleteAppointment(index){
-
-appointments.splice(index,1);
-
-saveAppointments();
-
-refreshAppointments();
-
+.card h3{
+    margin-bottom:12px;
 }
 
-
-/* ==========================
-   CALL CLIENT
-========================== */
-
-function callClient(phone){
-
-window.location.href="tel:"+phone;
-
+.card p{
+    font-size:34px;
+    font-weight:bold;
+    color:#90ee90;
 }
 
+/* FORM */
 
-/* ==========================
-   LOAD RECORDS
-========================== */
-
-function loadRecords(){
-
-let table=document.getElementById("recordTable");
-
-if(!table) return;
-
-records.forEach((record,index)=>{
-
-let row=table.insertRow();
-
-row.insertCell(0).innerText=record.pet;
-row.insertCell(1).innerText=record.disease;
-row.insertCell(2).innerText=record.treatment;
-
-row.insertCell(3).innerHTML=
-`
-<button onclick="deleteRecord(${index})">
-Delete
-</button>
-`;
-
-});
-
-petCount=records.length;
-
-document.getElementById("petCount").innerText=
-petCount;
-
+form{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin:20px 0;
 }
 
-
-/* ==========================
-   ADD RECORD
-========================== */
-
-function addRecord(e){
-
-e.preventDefault();
-
-let pet=document.getElementById("petName").value;
-let disease=document.getElementById("disease").value;
-let treatment=document.getElementById("treatment").value;
-
-records.push({
-
-pet,
-disease,
-treatment
-
-});
-
-saveRecords();
-
-refreshRecords();
-
-e.target.reset();
-
+form input{
+    flex:1;
+    min-width:220px;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    outline:none;
 }
 
-
-/* ==========================
-   REFRESH RECORDS
-========================== */
-
-function refreshRecords(){
-
-let table=document.getElementById("recordTable");
-
-table.innerHTML=
-`
-<tr>
-<th>Pet</th>
-<th>Disease</th>
-<th>Treatment</th>
-<th>Action</th>
-</tr>
-`;
-
-loadRecords();
-
+form button{
+    background:#2e8b57;
+    color:white;
+    border:none;
+    padding:12px 22px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.3s;
 }
 
-
-/* ==========================
-   DELETE RECORD
-========================== */
-
-function deleteRecord(index){
-
-records.splice(index,1);
-
-saveRecords();
-
-refreshRecords();
-
+form button:hover{
+    background:#1f6f45;
+    transform:scale(1.03);
 }
 
+/* TABLE */
 
-/* ==========================
-   DISABLE PAST DATES
-========================== */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+    background:rgba(255,255,255,.12);
+    backdrop-filter:blur(8px);
+    overflow:hidden;
+    border-radius:10px;
+}
 
-function disablePastDates(){
+th{
+    background:#2e8b57;
+    padding:14px;
+}
 
-let input=document.getElementById("appointmentDate");
+td{
+    padding:12px;
+    text-align:center;
+    border-bottom:1px solid rgba(255,255,255,.15);
+}
 
-if(!input) return;
+tr:hover{
+    background:rgba(255,255,255,.08);
+}
 
-let today=new Date();
+/* BUTTONS */
 
-input.min=today.toISOString().split("T")[0];
+button{
+    background:#2e8b57;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:.3s;
+    margin:2px;
+}
 
-} 
+button:hover{
+    background:#1f6f45;
+}
+
+.remove-btn{
+    background:#dc3545 !important;
+}
+
+.remove-btn:hover{
+    background:#b02a37 !important;
+}
+
+/* FOOTER */
+
+.footer{
+    margin-top:40px;
+    text-align:center;
+    background:rgba(0,0,0,.6);
+    padding:18px;
+}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar{
+    width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#2e8b57;
+    border-radius:10px;
+}
+
+/* ANIMATION */
+
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .navbar{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .navbar ul{
+        flex-wrap:wrap;
+        justify-content:center;
+    }
+
+    .cards{
+        flex-direction:column;
+    }
+
+    .card{
+        width:100%;
+    }
+
+    form{
+        flex-direction:column;
+    }
+
+    form input,
+    form button{
+        width:100%;
+    }
+
+    table{
+        display:block;
+        overflow-x:auto;
+    }
+
+}
