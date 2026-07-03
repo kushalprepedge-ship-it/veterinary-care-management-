@@ -342,4 +342,4 @@ today.toISOString().split("T")[0];
 document.getElementById("appointmentDate").min =
 minDate;
 
-}
+} which code is this???
